@@ -4,7 +4,7 @@ import torch
 import torch.distributed as dist
 import os
 
-RANK: int = 0
+RANK: int = int(os.environ['RANK'])
 
 
 def set_seed():
