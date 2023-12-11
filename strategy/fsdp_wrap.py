@@ -9,7 +9,7 @@ def get_fsdp_wrap_strategy(cfg: TrainConfig):
     def lambda_policy(module):
         ret = False
         if len(list(module.named_children())) == 0 and getattr(module,
-                                                               'weight') is not None and module.weight.requires_grad:
+                                                               'weight', None) is not None and module.weight.requires_grad:
             ret = True
         return ret
 

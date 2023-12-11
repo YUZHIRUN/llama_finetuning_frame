@@ -40,7 +40,7 @@ def cuda_communication_init(**kwargs):
             record_error_log()
     else:
         torch.cuda.set_device(0)
-        print_mention('Clearing GPU cache for all ranks')
+        print_mention('Clearing GPU cache for all ranks', RANK)
         torch.cuda.empty_cache()
         record_error_log()
     return train_config, fsdp_config
