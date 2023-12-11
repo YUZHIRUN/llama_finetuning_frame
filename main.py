@@ -1,5 +1,4 @@
 import fire
-import processing
 from processing import *
 from strategy import get_optimizer
 from utils import print_result
@@ -18,7 +17,7 @@ def main(**kwargs):
                    test_dataloader=test_dataloader,
                    optimizer=optimizer,
                    lr_scheduler=lr_scheduler)
-    print_result(result, processing.RANK)
+    print_result(result, RANK)
 
 
 if __name__ == '__main__':
