@@ -1,5 +1,4 @@
 from transformers.models.llama import LlamaForCausalLM, LlamaConfig, LlamaTokenizer
-from optimum.bettertransformer import BetterTransformer
 from config import *
 import torch
 from utils import *
@@ -53,6 +52,7 @@ def load_model(cfg: tuple[TrainConfig, FsdpConfig], rank=0):
     print_mention('Checking model... Model: {}'.format(train_cfg.model), rank)
     model = load_llama_integrate(train_cfg)
     if train_cfg.use_fast_kernels:
+        from optimum.bettertransformer import BetterTransformer
         model = BetterTransformer.transform(model)
     print_mention('Model has been loaded, total parameters: {} Billion'.format(get_model_params(model)), rank)
     if train_cfg.quantization:
