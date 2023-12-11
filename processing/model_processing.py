@@ -42,7 +42,7 @@ def load_model_with_peft(cfg: TrainConfig):
         raise ValueError('Peft method error or not support!')
     peft_config_class = (LoraConfig, AdaptionPromptConfig, PrefixTuningConfig)
     config_index = peft_method_list.index(cfg.peft_method)
-    peft_config_obj = peft_config_class[config_index](**(asdict(config_class_def_list[config_index])))
+    peft_config_obj = peft_config_class[config_index](**(asdict(config_class_def_list[config_index]())))
     return peft_config_obj
 
 
