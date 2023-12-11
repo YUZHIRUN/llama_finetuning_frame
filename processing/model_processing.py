@@ -5,6 +5,7 @@ from utils import *
 import peft
 from peft import LoraConfig, AdaptionPromptConfig, PrefixTuningConfig
 from dataclasses import asdict
+from processing import RANK
 
 
 def get_model_params(model):
@@ -46,15 +47,15 @@ def load_model_with_peft(cfg: TrainConfig):
     return peft_config_obj
 
 
-def load_model(cfg: tuple[TrainConfig, FsdpConfig], rank=0):
+def load_model(cfg: tuple[TrainConfig, FsdpConfig]):
     train_cfg = cfg[0]
     fsdp_cfg = cfg[1]
-    print_mention('Checking model... Model: {}'.format(train_cfg.model), rank)
+    print_mention('Checking model... Model: {}'.format(train_cfg.model), RANK)
     model = load_llama_integrate(train_cfg)
     if train_cfg.use_fast_kernels:
         from optimum.bettertransformer import BetterTransformer
         model = BetterTransformer.transform(model)
-    print_mention('Model has been loaded, total parameters: {} Billion'.format(get_model_params(model)), rank)
+    print_mention('Model has been loaded, total parameters: {} Billion'.format(get_model_params(model)), RANK)
     if train_cfg.quantization:
         model = peft.prepare_model_for_kbit_training(model)
     if fsdp_cfg.pure_fp16 and not train_cfg.quantization:
@@ -64,7 +65,7 @@ def load_model(cfg: tuple[TrainConfig, FsdpConfig], rank=0):
     if train_cfg.use_peft:
         peft_config_obj = load_model_with_peft(train_cfg)
         model = peft.get_peft_model(model, peft_config_obj)
-        print_mention('Start fine-tuning the model with peft, The training parameters are as follows', rank)
+        print_mention('Start fine-tuning the model with peft, The training parameters are as follows', RANK)
         model.print_trainable_parameters()
     return model
 

@@ -23,7 +23,7 @@ def get_list_average(input_list: list):
     return sum(input_list) / len(input_list)
 
 
-def test_mode(model, config: TrainConfig, dataloader, word_size):
+def test_mode(model, config: TrainConfig, dataloader, world_size):
     global BEST_LOSS
     model.eval()
     dataloader_len = len(dataloader)
@@ -44,11 +44,11 @@ def test_mode(model, config: TrainConfig, dataloader, word_size):
             f'Evaluate step {step}/{dataloader_len} has been completed:')
     pbar.close()
     test_end_time = time.perf_counter()
-    if word_size > 1:
+    if world_size > 1:
         dist.all_reduce(total_loss)
     loss_value = total_loss / dataloader_len
     if config.fsdp_enable:
-        loss_value = loss_value / word_size
+        loss_value = loss_value / world_size
     perp_value = math.exp(loss_value)
     test_epoch_perplexity.append(perp_value)
     test_epoch_loss.append(loss_value)
@@ -77,7 +77,7 @@ def train_start(model, config: TrainConfig, train_dataloader, test_dataloader, o
     elif config.use_fp16 and not config.fsdp_enable:
         scaler = GradScaler()
     autocast = auto_mixed.autocast if config.use_fp16 else nullcontext
-    word_size = int(os.environ['WORD_SIZE'])
+    world_size = int(os.environ['WORLD_SIZE'])
     for epoch in range(1, config.num_epoch + 1):
         train_epoch_start_time = time.perf_counter()
         model.train()
@@ -107,17 +107,17 @@ def train_start(model, config: TrainConfig, train_dataloader, test_dataloader, o
             pbar.set_description(pbar_mention)
         pbar.close()
         train_epoch_end_time = time.perf_counter()
-        if word_size > 1:
+        if world_size > 1:
             dist.all_reduce(total_loss)
         loss_value = total_loss / len(train_dataloader)
         if config.fsdp_enable:
-            loss_value = loss_value / word_size
+            loss_value = loss_value / world_size
         perp_value = math.exp(loss_value)
         train_epoch_loss.append(loss_value)
         train_epoch_perplexity.append(perp_value)
         train_epoch_time.append(train_epoch_end_time - train_epoch_start_time)
         lr_scheduler.step()
-        test_mode(model, config, test_dataloader, word_size)
+        test_mode(model, config, test_dataloader, world_size)
         epoch_end_time = time.perf_counter()
         epoch_time = epoch_end_time - train_epoch_start_time
         epoch_times.append(epoch_time)
