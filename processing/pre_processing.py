@@ -19,7 +19,6 @@ def record_error_log():
 
 
 def cuda_communication_init(**kwargs):
-    global RANK
     train_config = TrainConfig()
     update_kwargs(train_config, **kwargs)
     if train_config.fsdp_enable:
@@ -29,7 +28,6 @@ def cuda_communication_init(**kwargs):
         fsdp_config = None
     if train_config.fsdp_enable:
         dist.init_process_group('nccl')
-        RANK = int(os.environ['RANK'])
     set_seed()
     if train_config.fsdp_enable:
         if dist.is_initialized():

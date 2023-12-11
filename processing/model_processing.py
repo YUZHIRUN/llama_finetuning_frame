@@ -1,4 +1,4 @@
-from transformers.models.llama import LlamaForCausalLM, LlamaConfig, LlamaTokenizer
+from transformers.models.llama import LlamaForCausalLM, LlamaTokenizer
 from config import *
 import torch
 from utils import *
