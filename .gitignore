@@ -1,0 +1,11 @@
+# ignore directory
+/.idea
+*/.idea
+*/__pycache__/*
+
+
+
+# ignore files
+*/test.py
+test.py
+*.pyc
