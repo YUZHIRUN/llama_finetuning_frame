@@ -1,4 +1,3 @@
-import random
 from utils import *
 from config import *
 import torch
@@ -31,7 +30,6 @@ def cuda_communication_init(**kwargs):
     if train_config.fsdp_enable:
         dist.init_process_group('nccl')
         RANK = int(os.environ['RANK'])
-        print(f'-----------------------LJLAJFRANK:{RANK}')
     set_seed()
     if train_config.fsdp_enable:
         if dist.is_initialized():

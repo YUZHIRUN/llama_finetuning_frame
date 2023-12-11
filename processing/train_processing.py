@@ -1,3 +1,4 @@
+import processing
 from config import TrainConfig
 from processing import *
 import torch
@@ -33,7 +34,7 @@ def test_mode(model, config: TrainConfig, dataloader, world_size):
     for step, batch in dataloader:
         for key in batch.keys():
             if config.fsdp_enable:
-                batch[key] = batch[key].to(RANK)
+                batch[key] = batch[key].to(processing.RANK)
             else:
                 batch[key] = batch[key].to('cuda:0')
         with torch.no_grad():
@@ -58,13 +59,13 @@ def test_mode(model, config: TrainConfig, dataloader, world_size):
         if config.fsdp_enable:
             dist.barrier()
         if config.use_peft:
-            print_mention('Model is being saved', RANK)
+            print_mention('Model is being saved', processing.RANK)
         else:
-            print_warning('Model has not been saved', RANK)
+            print_warning('Model has not been saved', processing.RANK)
         model.save_pretrained(config.output_dir)
         if config.fsdp_enable:
             dist.barrier()
-        print_mention('Model has been saved', RANK)
+        print_mention('Model has been saved', processing.RANK)
         checkpoint_end_time = time.perf_counter()
         checkpoint_epoch_times.append(checkpoint_end_time - checkpoint_start_time)
         BEST_LOSS = loss_value
@@ -86,7 +87,7 @@ def train_start(model, config: TrainConfig, train_dataloader, test_dataloader, o
         for step, batch in enumerate(train_dataloader):
             for key in batch.keys():
                 if config.fsdp_enable:
-                    batch[key] = batch[key].to(RANK)
+                    batch[key] = batch[key].to(processing.RANK)
                 else:
                     batch[key] = batch[key].to('cuda:0')
             with autocast():
@@ -123,7 +124,7 @@ def train_start(model, config: TrainConfig, train_dataloader, test_dataloader, o
         epoch_times.append(epoch_time)
         print_mention(
             f'Epoch: {epoch} Completed, Perplexity: {perp_value: .4f}, Loss: {loss_value: .4f}, Time: {epoch_time: .3f}s',
-            RANK,
+            processing.RANK,
             color='green')
 
 
