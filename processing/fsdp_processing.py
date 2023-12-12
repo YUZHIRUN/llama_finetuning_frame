@@ -4,8 +4,10 @@ from config import *
 from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
 from torch.distributed.fsdp import CPUOffload
 from strategy import *
-from torch.distributed.algorithms._checkpoint.checkpoint_wrapper import apply_activation_checkpointing
+from torch.distributed.algorithms._checkpoint.checkpoint_wrapper import apply_activation_checkpointing, \
+    checkpoint_wrapper, CheckpointImpl
 from transformers.models.llama.modeling_llama import LlamaDecoderLayer
+from functools import partial
 
 
 def fsdp_wrap(model, cfg: tuple[TrainConfig, FsdpConfig]):
@@ -22,8 +24,10 @@ def fsdp_wrap(model, cfg: tuple[TrainConfig, FsdpConfig]):
                      limit_all_gathers=fsdp_cfg.limit_all_gathers,
                      sync_module_states=fsdp_cfg.sync_module_states,
                      )
+        checkpoint_wrapper_fn = partial(checkpoint_wrapper, checkpoint_impl=CheckpointImpl.NO_REENTRANT)
         if fsdp_cfg.apply_checkpoint:
-            apply_activation_checkpointing(model, check_fn=lambda layer: isinstance(layer, LlamaDecoderLayer))
-    else:
-        model.to('cuda')
-    return model
+            apply_activation_checkpointing(model, checkpoint_wrapper_fn=checkpoint_wrapper_fn,
+                                           check_fn=lambda layer: isinstance(layer, LlamaDecoderLayer))
+        else:
+            model.to('cuda')
+        return model
