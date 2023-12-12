@@ -15,7 +15,7 @@ def fsdp_wrap(model, cfg: tuple[TrainConfig, FsdpConfig]):
         print_mention('Wrap model by FSDP', RANK)
         model = FSDP(model,
                      auto_wrap_policy=get_fsdp_wrap_strategy(train_cfg),
-                     cpu_offload=CPUOffload(offload_params=fsdp_cfg.cpu_offload),
+                     cpu_offload=CPUOffload(offload_params=True) if fsdp_cfg.cpu_offload else None,
                      mixed_precision=get_mix_precision_strategy(fsdp_cfg),
                      sharding_strategy=fsdp_cfg.sharding_strategy,
                      device_id=RANK,

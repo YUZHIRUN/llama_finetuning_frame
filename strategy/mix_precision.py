@@ -23,10 +23,10 @@ def get_mix_precision_strategy(cfg: FsdpConfig):
     mix_precision_strategy = None
     if cfg.use_mix_precision:
         if cfg.use_fp16 and torch.cuda.is_bf16_supported():
-            mix_precision_strategy = BFloat16
+            mix_precision_strategy = Float16
             print_mention('Torch.bfloat16 is enable', RANK)
         elif torch.cuda.is_bf16_supported() and not cfg.use_fp16:
-            mix_precision_strategy = Float16
+            mix_precision_strategy = BFloat16
             print_mention('Use float16 mixed precision', RANK)
         else:
             print_mention('bfloat16 is not supported, use float16 mixed precision', RANK)

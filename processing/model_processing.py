@@ -58,9 +58,9 @@ def load_model(cfg: tuple[TrainConfig, FsdpConfig]):
     print_mention('Model has been loaded, total parameters: {} Billion'.format(get_model_params(model)), RANK)
     if train_cfg.quantization:
         model = peft.prepare_model_for_kbit_training(model)
-    if fsdp_cfg.pure_fp16 and not train_cfg.quantization:
+    if fsdp_cfg.pure_bf16 and not train_cfg.quantization and train_cfg.fsdp_enable:
         model.to(torch.bfloat16)
-    elif fsdp_cfg.pure_fp16 and train_cfg.quantization:
+    elif fsdp_cfg.pure_bf16 and train_cfg.quantization and train_cfg.fsdp_enable:
         raise AttributeError('Pure float cannot be set after applying model quantization')
     if train_cfg.use_peft:
         peft_config_obj = load_model_with_peft(train_cfg)

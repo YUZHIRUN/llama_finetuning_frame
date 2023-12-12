@@ -142,7 +142,7 @@ class AnyPrecisionAdamW(optimizer.Optimizer):
 def get_optimizer(model, cfg: tuple[TrainConfig, FsdpConfig]):
     train_cfg = cfg[0]
     fsdp_cfg = cfg[1]
-    if fsdp_cfg.pure_fp16 and fsdp_cfg.optimizer == 'anyprecision':
+    if fsdp_cfg.pure_bf16 and fsdp_cfg.optimizer == 'anyprecision':
         optimizer = AnyPrecisionAdamW(model.parameters(),
                                       lr=train_cfg.lr,
                                       momentum_dtype=torch.bfloat16,

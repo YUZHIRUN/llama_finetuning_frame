@@ -15,7 +15,7 @@ class TrainConfig:
     context_size: int = 4096
     num_work: int = 1
     # Learning params
-    lr: float = 1e4
+    lr: float = 1e-4
     weight_decay: float = 0
     gamma: float = 0.85
     schedule_step: int = 1
