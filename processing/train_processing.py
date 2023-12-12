@@ -30,7 +30,7 @@ def test_mode(model, config: TrainConfig, dataloader, world_size):
     total_loss = float(0)
     test_start_time = time.perf_counter()
     pbar = tqdm(desc='Evaluate step:', colour='blue', dynamic_ncols=True, total=dataloader_len)
-    for step, batch in dataloader:
+    for step, batch in enumerate(dataloader):
         for key in batch.keys():
             if config.fsdp_enable:
                 batch[key] = batch[key].to(RANK)
