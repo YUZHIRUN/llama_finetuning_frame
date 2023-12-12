@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader, DistributedSampler
 from transformers.data import DataCollatorForSeq2Seq
 import torch.distributed as dist
 from processing import RANK
+from transformers import default_data_collator
 
 
 def get_dataloader_params(cfg: TrainConfig, dataset, tokenizer, mode='train'):
@@ -17,6 +18,7 @@ def get_dataloader_params(cfg: TrainConfig, dataset, tokenizer, mode='train'):
                                                    shuffle=True if mode == 'train' else False)
             params['batch_size'] = batch_size
             params['drop_last'] = True
+            params['collate_fn'] = default_data_collator
         else:
             raise ValueError(f'Unknown batching strategy: {cfg.batch_strategy}')
     elif cfg.batch_strategy == 'padding':
