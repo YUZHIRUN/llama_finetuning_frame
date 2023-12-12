@@ -110,7 +110,7 @@ def train_start(model, config: TrainConfig, train_dataloader, test_dataloader, o
         loss_value = total_loss / len(train_dataloader)
         if config.fsdp_enable:
             loss_value = loss_value / world_size
-        perp_value = torch.exp(torch.tensor(loss_value))
+        perp_value = torch.exp(loss_value)
         train_epoch_loss.append(float(loss_value))
         train_epoch_perplexity.append(float(perp_value))
         train_epoch_time.append(train_epoch_end_time - train_epoch_start_time)
