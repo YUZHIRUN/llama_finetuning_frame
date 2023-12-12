@@ -10,7 +10,6 @@ import torch.cuda.amp as auto_mixed
 from contextlib import nullcontext
 import time
 import os
-import math
 from tqdm import tqdm
 
 BEST_LOSS = float('inf')
@@ -49,25 +48,24 @@ def test_mode(model, config: TrainConfig, dataloader, world_size):
     loss_value = total_loss / dataloader_len
     if config.fsdp_enable:
         loss_value = loss_value / world_size
-    perp_value = math.exp(loss_value)
-    test_epoch_perplexity.append(perp_value)
-    test_epoch_loss.append(loss_value)
+    perp_value = torch.exp(loss_value)
+    test_epoch_perplexity.append(float(perp_value))
+    test_epoch_loss.append(float(loss_value))
     test_epoch_time.append(test_end_time - test_start_time)
     if loss_value < BEST_LOSS:
         checkpoint_start_time = time.perf_counter()
         if config.fsdp_enable:
             dist.barrier()
         if config.use_peft:
-            print_mention('Model is being saved', RANK)
+            print_mention('Model has being saved', RANK)
         else:
             print_warning('Model has not been saved', RANK)
         model.save_pretrained(config.output_dir)
         if config.fsdp_enable:
             dist.barrier()
-        print_mention('Model has been saved', RANK)
         checkpoint_end_time = time.perf_counter()
         checkpoint_epoch_times.append(checkpoint_end_time - checkpoint_start_time)
-        BEST_LOSS = loss_value
+        BEST_LOSS = float(loss_value)
 
 
 def train_start(model, config: TrainConfig, train_dataloader, test_dataloader, optimizer, lr_scheduler):
@@ -112,9 +110,9 @@ def train_start(model, config: TrainConfig, train_dataloader, test_dataloader, o
         loss_value = total_loss / len(train_dataloader)
         if config.fsdp_enable:
             loss_value = loss_value / world_size
-        perp_value = math.exp(loss_value)
-        train_epoch_loss.append(loss_value)
-        train_epoch_perplexity.append(perp_value)
+        perp_value = torch.exp(torch.tensor(loss_value))
+        train_epoch_loss.append(float(loss_value))
+        train_epoch_perplexity.append(float(perp_value))
         train_epoch_time.append(train_epoch_end_time - train_epoch_start_time)
         lr_scheduler.step()
         test_mode(model, config, test_dataloader, world_size)
@@ -123,8 +121,7 @@ def train_start(model, config: TrainConfig, train_dataloader, test_dataloader, o
         epoch_times.append(epoch_time)
         print_mention(
             f'Epoch: {epoch} Completed, Perplexity: {perp_value: .4f}, Loss: {loss_value: .4f}, Time: {epoch_time: .3f}s',
-            RANK,
-            color='green')
+            RANK)
 
 
 def train(model, **kwargs):
