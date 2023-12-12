@@ -13,7 +13,7 @@ def get_dataloader_params(cfg: TrainConfig, dataset, tokenizer, mode='train'):
     batch_size = cfg.batch_size if mode == 'train' else 1
     if cfg.batch_strategy == 'packing':
         if cfg.fsdp_enable:
-            params['sampler'] = DistributedSampler(dataset, num_replicas=dist.get_world_size(), rank=RANK,
+            params['sampler'] = DistributedSampler(dataset, num_replicas=dist.get_world_size(), rank=dist.get_rank(),
                                                    shuffle=True if mode == 'train' else False)
             params['batch_size'] = batch_size
             params['drop_last'] = True
@@ -22,7 +22,7 @@ def get_dataloader_params(cfg: TrainConfig, dataset, tokenizer, mode='train'):
     elif cfg.batch_strategy == 'padding':
         if cfg.fsdp_enable:
             params['batch_sampler'] = DistributeBatchSamplerInLength(dataset, batch_size=batch_size, shuffle=True,
-                                                                     num_node=dist.get_world_size(), rank=RANK)
+                                                                     num_node=dist.get_world_size(), rank=dist.get_rank())
         else:
             params['batch_sampler'] = BatchSamplerInLength(dataset, batch_size=batch_size, shuffle=True,
                                                            drop_last=True if mode == 'train' else False)
