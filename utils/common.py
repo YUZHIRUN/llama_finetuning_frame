@@ -12,7 +12,7 @@ import time
 
 
 def print_mention(content, rank=0, color='default'):
-    content = '----------------------> Info: {} <-----------------------'.format(content)
+    content = '-----------------------------> Info: {}'.format(content)
     if color == 'red':
         content = '\033[31m{}\033[0m'.format(content)
     elif color == 'green':
@@ -28,7 +28,7 @@ def print_mention(content, rank=0, color='default'):
 
 
 def print_warning(content, rank=0, color='yellow'):
-    content = '-----------------------! Warning: {} !-----------------------'.format(content)
+    content = '-----------------------------! Warning: {}'.format(content)
     if color == 'red':
         content = '\033[31m{}\033[0m'.format(content)
     elif color == 'green':
@@ -78,10 +78,3 @@ def update_kwargs(config, **kwargs):
                     setattr(config, son, value)
         if hasattr(config, key):
             setattr(config, key, value)
-
-
-if __name__ == '__main__':
-    print_mention('Model loading')
-    print_mention('Model loading')
-    print_mention('Model loading')
-    print_mention('Model loading')
