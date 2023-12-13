@@ -67,6 +67,7 @@ def load_model(cfg: tuple[TrainConfig, FsdpConfig]):
         model = peft.get_peft_model(model, peft_config_obj)
         print_mention('Start fine-tuning the model with peft, The training parameters are as follows', RANK)
         if RANK == 0:
+            print('-----------------------------> Info: ', end='')
             model.print_trainable_parameters()
     return model
 

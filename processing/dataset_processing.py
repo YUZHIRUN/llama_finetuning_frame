@@ -38,7 +38,7 @@ def get_dataloader(cfg: TrainConfig, tokenizer, **kwargs):
     train_datasets = get_datasets(dataset_cfg, tokenizer, split=dataset_cfg.train_split)
     test_datasets = get_datasets(dataset_cfg, tokenizer, split=dataset_cfg.test_split)
     print_mention('Train dataset length: {}'.format(len(train_datasets)), RANK)
-    print_mention('Train dataset length: {}'.format(len(test_datasets)), RANK)
+    print_mention('Test dataset length: {}'.format(len(test_datasets)), RANK)
     if cfg.batch_strategy == 'packing':
         train_datasets = ConcatDataset(train_datasets, wrap_size=cfg.context_size)
     train_dataloader_params = get_dataloader_params(cfg, train_datasets, tokenizer)
