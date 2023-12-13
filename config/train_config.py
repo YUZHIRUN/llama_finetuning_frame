@@ -22,8 +22,3 @@ class TrainConfig:
     # train params
     use_fp16: bool = False
     num_epoch: int = 3
-
-
-if __name__ == '__main__':
-    test = TrainConfig()
-    print(type(test).__name__ == 'TrainConfig')
