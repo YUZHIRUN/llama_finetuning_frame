@@ -13,9 +13,9 @@ import os
 from tqdm import tqdm
 
 BEST_LOSS = float('inf')
-epoch_times = train_epoch_time = test_epoch_time = checkpoint_epoch_times = list()
-train_epoch_perplexity = train_epoch_loss = list()
-test_epoch_perplexity = test_epoch_loss = list()
+epoch_times, train_epoch_time,  test_epoch_time, checkpoint_epoch_times = list(), list(), list(), list()
+train_epoch_perplexity,  train_epoch_loss = list(), list()
+test_epoch_perplexity,  test_epoch_loss = list(), list()
 
 
 def get_list_average(input_list: list):
