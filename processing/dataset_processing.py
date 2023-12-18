@@ -1,9 +1,10 @@
 from config import *
 from utils import *
-from processing import *
 from torch.utils.data import DataLoader, DistributedSampler
 from transformers.data import DataCollatorForSeq2Seq
 import torch.distributed as dist
+from processing import RANK
+from transformers import default_data_collator
 
 
 def get_dataloader_params(cfg: TrainConfig, dataset, tokenizer, mode='train'):
@@ -17,6 +18,7 @@ def get_dataloader_params(cfg: TrainConfig, dataset, tokenizer, mode='train'):
                                                    shuffle=True if mode == 'train' else False)
             params['batch_size'] = batch_size
             params['drop_last'] = True
+            params['collate_fn'] = default_data_collator
         else:
             raise ValueError(f'Unknown batching strategy: {cfg.batch_strategy}')
     elif cfg.batch_strategy == 'padding':
@@ -36,7 +38,7 @@ def get_dataloader(cfg: TrainConfig, tokenizer, **kwargs):
     train_datasets = get_datasets(dataset_cfg, tokenizer, split=dataset_cfg.train_split)
     test_datasets = get_datasets(dataset_cfg, tokenizer, split=dataset_cfg.test_split)
     print_mention('Train dataset length: {}'.format(len(train_datasets)), RANK)
-    print_mention('Train dataset length: {}'.format(len(test_datasets)), RANK)
+    print_mention('Test dataset length: {}'.format(len(test_datasets)), RANK)
     if cfg.batch_strategy == 'packing':
         train_datasets = ConcatDataset(train_datasets, wrap_size=cfg.context_size)
     train_dataloader_params = get_dataloader_params(cfg, train_datasets, tokenizer)

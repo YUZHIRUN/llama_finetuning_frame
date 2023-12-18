@@ -15,15 +15,10 @@ class TrainConfig:
     context_size: int = 4096
     num_work: int = 1
     # Learning params
-    lr: float = 1e4
+    lr: float = 1e-4
     weight_decay: float = 0
     gamma: float = 0.85
     schedule_step: int = 1
     # train params
     use_fp16: bool = False
     num_epoch: int = 3
-
-
-if __name__ == '__main__':
-    test = TrainConfig()
-    print(type(test).__name__ == 'TrainConfig')

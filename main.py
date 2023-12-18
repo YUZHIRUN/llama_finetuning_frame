@@ -6,7 +6,7 @@ from utils import print_result
 
 def main(**kwargs):
     train_config, fsdp_config = cuda_communication_init(**kwargs)
-    model = load_model((train_config, fsdp_config), rank=RANK)
+    model = load_model(cfg=(train_config, fsdp_config))
     tokenizer = load_tokenizer(train_config)
     train_dataloader, test_dataloader = get_dataloader(train_config, tokenizer, **kwargs)
     model = fsdp_wrap(model, (train_config, fsdp_config))

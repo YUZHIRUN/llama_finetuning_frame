@@ -12,46 +12,46 @@ import time
 
 
 def print_mention(content, rank=0, color='default'):
-    content = '----------------------> Info: {} <-----------------------'.format(content)
     if color == 'red':
-        content = '\033[31m{}\033[0m'.format(content)
+        content = '\033[1;31m{}\033[0m'.format(content)
     elif color == 'green':
-        content = '\033[32m{}\033[0m'.format(content)
+        content = '\033[1;32m{}\033[0m'.format(content)
     elif color == 'yellow':
-        content = '\033[33m{}\033[0m'.format(content)
-    elif color == 'orange':
-        content = '\033[34m{}\033[0m'.format(content)
+        content = '\033[1;33m{}\033[0m'.format(content)
+    elif color == 'blue':
+        content = '\033[1;34m{}\033[0m'.format(content)
     else:
         content = content
+    content = '-----------------------------> Info: {}'.format(content)
     if rank == 0:
         print(content)
 
 
 def print_warning(content, rank=0, color='yellow'):
-    content = '-----------------------! Warning: {} !-----------------------'.format(content)
     if color == 'red':
-        content = '\033[31m{}\033[0m'.format(content)
+        content = '\033[1;31m{}\033[0m'.format(content)
     elif color == 'green':
-        content = '\033[32m{}\033[0m'.format(content)
+        content = '\033[1;32m{}\033[0m'.format(content)
     elif color == 'yellow':
-        content = '\033[33m{}\033[0m'.format(content)
-    elif color == 'orange':
-        content = '\033[34m{}\033[0m'.format(content)
+        content = '\033[1;33m{}\033[0m'.format(content)
+    elif color == 'blue':
+        content = '\033[1;34m{}\033[0m'.format(content)
     else:
         content = content
+    content = '-----------------------------! Warning: {}'.format(content)
     if rank == 0:
         print(content)
 
 
 def print_arrow(content, color='green'):
     if color == 'red':
-        content = '\033[31m{}\033[0m'.format(content)
+        content = '\033[1;31m{}\033[0m'.format(content)
     elif color == 'green':
-        content = '\033[32m{}\033[0m'.format(content)
+        content = '\033[1;32m{}\033[0m'.format(content)
     elif color == 'yellow':
-        content = '\033[33m{}\033[0m'.format(content)
-    elif color == 'orange':
-        content = '\033[34m{}\033[0m'.format(content)
+        content = '\033[1;33m{}\033[0m'.format(content)
+    elif color == 'blue':
+        content = '\033[1;34m{}\033[0m'.format(content)
     else:
         content = content
     content = f'-------> {content}'
@@ -78,10 +78,3 @@ def update_kwargs(config, **kwargs):
                     setattr(config, son, value)
         if hasattr(config, key):
             setattr(config, key, value)
-
-
-if __name__ == '__main__':
-    print_mention('Model loading')
-    print_mention('Model loading')
-    print_mention('Model loading')
-    print_mention('Model loading')

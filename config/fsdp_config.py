@@ -6,7 +6,7 @@ from torch.distributed.fsdp import ShardingStrategy
 class FsdpConfig:
     sharding_strategy = ShardingStrategy.FULL_SHARD
     use_fp16: bool = False
-    pure_fp16: bool = False
+    pure_bf16: bool = False
     use_mix_precision: bool = True
     cpu_offload: bool = False
     # FSDP Wrap
