@@ -100,8 +100,8 @@ def train_start(model, config: TrainConfig, train_dataloader, test_dataloader, o
                 loss.backward()
                 optimizer.step()
             pbar.update(1)
-            pbar_mention = (f'Train epoch {epoch}/{config.num_epoch}, step {step}/{len(train_dataloader)} has been '
-                            f'completed(loss: {loss.detach().float()})')
+            pbar_mention = (f'Train epoch {epoch}/{config.num_epoch}, step {step + 1}/{len(train_dataloader)} has been '
+                            f'completed(loss: {float(loss.detach().float())})')
             pbar.set_description(pbar_mention)
         pbar.close()
         train_epoch_end_time = time.perf_counter()
